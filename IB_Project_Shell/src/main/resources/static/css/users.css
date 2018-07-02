@@ -1,0 +1,15 @@
+@charset "UTF-8";
+#myTable,#myInactiveTable{
+	margin: 20px;
+}
+td,th{
+	padding: 10px;
+	
+}
+.table-bordered {
+   width: auto !important;
+}
+#logoutButton{
+	margin-left: 20px;
+	margin-top: 20px;
+}
