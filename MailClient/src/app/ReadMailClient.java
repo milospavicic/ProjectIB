@@ -244,12 +244,14 @@ public class ReadMailClient extends MailClient {
 			        System.out.println("cert provera: " + (cert==keyInfo.getX509Certificate()));
 			        
 			        //ako postoji sertifikat, provera potpisa
-			        if(cert != null) 
+			        if(cert != null) {
+			        	System.out.println("checkSignatureValue: "+ signature.checkSignatureValue((X509Certificate) cert));
 			        	//return signature.checkSignatureValue((X509Certificate) cert);
-			        	if(cert.getSignature()==keyInfo.getX509Certificate().getSignature())
+			        	if(signature.checkSignatureValue((X509Certificate) cert))
 			        		return true;
 			        	else 
 			        		return false;
+			        }
 			        else
 			        	return false;
 			    }
@@ -278,6 +280,7 @@ public class ReadMailClient extends MailClient {
 			
 			if(ks.isKeyEntry("userb")) {
 				X509Certificate  cert =(X509Certificate ) ks.getCertificate("usera");
+				System.out.println("cert" + cert.getSignature());
 				return cert;
 				
 			}

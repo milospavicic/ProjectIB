@@ -1,11 +1,14 @@
 package app;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -148,16 +151,19 @@ public class WriteMailClient extends MailClient {
 			//TODO 5: kreiranje EncryptedData objekata, postavljanje KeyInfo objekata
 			EncryptedData encryptedData = xmlCipher.getEncryptedData();
 			encryptedData.setKeyInfo(keyInfo);
-
-			//TODO 6: kriptovati sadrzaj dokumenta
-			xmlCipher.doFinal(doc, rootElement, true);
-
+			
 			//potpisivanje dokumenta
 			WriteMailClient sign = new WriteMailClient();
 			sign.signingDocument(doc);
 			
+			//changeEmail(doc);
+			
+			//TODO 6: kriptovati sadrzaj dokumenta
+			xmlCipher.doFinal(doc, rootElement, true);
+			
 			// Slanje poruke
 			String encryptedXml = xmlAsString(doc);
+			
 			System.out.println("Mail posle enkripcije: " + encryptedXml);
 
 			String cipherSubject = cipherData(secretKey,subject);
@@ -223,7 +229,7 @@ public class WriteMailClient extends MailClient {
 	// TODO 1 - generisi tajni (session) kljuc
 	private static SecretKey generateSessionKey() {
 		try {
-			KeyGenerator keyGenerator = KeyGenerator.getInstance("DESede"); 
+			KeyGenerator keyGenerator = KeyGenerator.getInstance("TripleDES"); 
 																			
 			return keyGenerator.generateKey();
 
@@ -295,6 +301,7 @@ public class WriteMailClient extends MailClient {
 			
 			if(ks.isKeyEntry("userb")) {
 				X509Certificate cert = (X509Certificate) ks.getCertificate("usera");
+				System.out.println("cert "+cert.getSignature());
 				return cert;
 				
 			}
@@ -347,10 +354,14 @@ public class WriteMailClient extends MailClient {
 			    
 			//poptis je child root elementa
 			rootEl.appendChild(sig.getElement());
-			System.out.println("sign pre kriptovanja: " + sig);    
+			System.out.println("sign pre kriptovanja: " + sig);   
+
+			System.out.println("sign signature: " + sig.getSignatureValue());
 			//potpisivanje
 			sig.sign(privateKey);
 			System.out.println("sign kriptovani: " + sig);
+
+			System.out.println("sign signature ps: " + sig.getSignatureValue());
 			
 			return doc;
 	    } catch (TransformationException e) {
@@ -372,5 +383,9 @@ public class WriteMailClient extends MailClient {
 		X509Certificate cert = getCertificate();
 		System.out.println("Signing....");
 		doc = signDocument(doc, privateKey, cert);
+	}
+	private static void changeEmail(Document doc) {
+		Element body = (Element) doc.getElementsByTagName("mailBody").item(0);
+		body.setTextContent("123123");
 	}
 }
