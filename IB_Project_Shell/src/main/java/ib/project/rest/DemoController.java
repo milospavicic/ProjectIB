@@ -16,12 +16,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/api/demo", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/demo")
+@CrossOrigin("*")
 public class DemoController {
 
 	private static String DATA_DIR_PATH;
@@ -47,26 +50,31 @@ public class DemoController {
 		return new ResponseEntity<String>(path.toString(), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/download", method = RequestMethod.GET)
-	public ResponseEntity<byte[]> download() {
+	@RequestMapping(value = "/download/{filename}", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> download(@PathVariable("filename") String filename) {
 
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
-		URL urlPath = classloader.getResource(DATA_DIR_PATH + File.separator + "demo.txt");
+		String myUrl = DATA_DIR_PATH + "/" + filename+".cer";
+		System.out.println(myUrl);
+		URL urlPath = classloader.getResource(myUrl);
+		
+		System.out.println("urlPath " + urlPath);
 		File file = null;
 		try {
 			file = new File(urlPath.getFile());
+			
 		}
 		catch (Exception e) {
+			System.out.println("NOT_FOUND");
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} 
 		
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
-		headers.add("filename", "demo.txt");
-
+		headers.add("filename", filename + ".cer");
+		
 		byte[] bFile = readBytesFromFile(file.toString());
-
 		return ResponseEntity.ok().headers(headers).body(bFile);
 	}
 

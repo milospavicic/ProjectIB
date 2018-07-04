@@ -64,9 +64,6 @@ public class ReadMailClient extends MailClient {
 
 	public static long PAGE_SIZE = 3;
 	public static boolean ONLY_FIRST_PAGE = true;
-	private static Certificate cert = null;
-	
-	//private static final String KEY_FILE = "./data/session.key";
 	
 	static {
 		//staticka inicijalizacija
@@ -145,7 +142,6 @@ public class ReadMailClient extends MailClient {
 		
 		System.out.println("\nSubject text: " + doc.getElementsByTagName("mailSubject").item(0).getTextContent());
 		System.out.println("Body text: " + doc.getElementsByTagName("mailBody").item(0).getTextContent());
-		//System.out.println("signature text: " + doc);
 
 	}
 	
@@ -238,14 +234,8 @@ public class ReadMailClient extends MailClient {
 			    //ako sadrzi sertifikat
 			    if(keyInfo.containsX509Data() && keyInfo.itemX509Data(0).containsCertificate()) { 
 			    	X509Certificate  cert =(X509Certificate) readCertificate();
-			        System.out.println("cert signature za proveru: " + cert.getSignature());
-			        System.out.println("keyinfo signature za proveru: " + keyInfo.getX509Certificate().getSignature());
-			        System.out.println("sertifikat signature provera: " + (cert.getSignature()==keyInfo.getX509Certificate().getSignature()));
-			        System.out.println("cert provera: " + (cert==keyInfo.getX509Certificate()));
-			        
 			        //ako postoji sertifikat, provera potpisa
 			        if(cert != null) {
-			        	System.out.println("checkSignatureValue: "+ signature.checkSignatureValue((X509Certificate) cert));
 			        	//return signature.checkSignatureValue((X509Certificate) cert);
 			        	if(signature.checkSignatureValue((X509Certificate) cert))
 			        		return true;
@@ -280,7 +270,6 @@ public class ReadMailClient extends MailClient {
 			
 			if(ks.isKeyEntry("userb")) {
 				X509Certificate  cert =(X509Certificate ) ks.getCertificate("usera");
-				System.out.println("cert" + cert.getSignature());
 				return cert;
 				
 			}

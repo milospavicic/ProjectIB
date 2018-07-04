@@ -29,7 +29,7 @@ function fillTable(){
 				console.log(user.email);
 				table.append('<tr>'+
 								'<td>'+user.email+'</td>'+
-								'<td><button class="btn btn-default">Download</button></td>'+
+								'<td><button onclick="downloadCer(\''+user.email+'\')" class="btn btn-default">Download</button></td>'+
 							'</tr>');
 			}
 		},
@@ -190,7 +190,10 @@ function currentUser(){
 		cache: false,
 		processData: false,
 		success:function(response){
+			console.log(response);
 			for ( var i in response.authorities) {
+				console.log(i);
+				console.log(response.authorities[i].name);
 				if(response.authorities[i].name=="ADMIN"){
 					fillInactiveTable();
 				}
@@ -205,4 +208,28 @@ function currentUser(){
 function logout(){
 	localStorage.removeItem("token");
 	window.location.replace("https://localhost:8443/login.html");
+}
+function downloadCer(userName){
+	var token = localStorage.getItem("token");
+	console.log(token);
+	
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', "/api/demo/download/"+userName, true);
+	xhr.setRequestHeader("Authorization", "Bearer " + token);
+	xhr.responseType = 'blob';
+
+	xhr.onload = function(e) {
+		if (this.status == 200) {
+			var blob = this.response;
+			console.log(blob);
+			var a = document.createElement('a');
+			var url = window.URL.createObjectURL(blob);
+			a.href = url;
+			a.download = xhr.getResponseHeader('filename');
+			a.click();
+			window.URL.revokeObjectURL(url);
+		}
+	};
+
+	xhr.send();
 }

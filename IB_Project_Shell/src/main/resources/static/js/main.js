@@ -1,7 +1,10 @@
 function download() {
-
+	var token = localStorage.getItem("token");
+	console.log(token);
+	
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', "/api/demo/download", true);
+	xhr.open('GET', "/api/demo/download/demo", true);
+	xhr.setRequestHeader("Authorization", "Bearer " + token);
 	xhr.responseType = 'blob';
 
 	xhr.onload = function(e) {

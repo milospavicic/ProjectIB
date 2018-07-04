@@ -386,6 +386,6 @@ public class WriteMailClient extends MailClient {
 	}
 	private static void changeEmail(Document doc) {
 		Element body = (Element) doc.getElementsByTagName("mailBody").item(0);
-		body.setTextContent("123123");
+		body.setTextContent("The email has been altered.");
 	}
 }

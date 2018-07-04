@@ -100,7 +100,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
                 
                 
             );
-
+//        "/**/*.jpg"
     }
 
 }
