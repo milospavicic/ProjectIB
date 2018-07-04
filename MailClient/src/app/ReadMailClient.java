@@ -145,6 +145,7 @@ public class ReadMailClient extends MailClient {
 
 	}
 	
+	@SuppressWarnings("unused")
 	private static String xmlAsString(Document doc) throws TransformerException{
 		TransformerFactory tf = TransformerFactory.newInstance();
 		Transformer transformer = tf.newTransformer();

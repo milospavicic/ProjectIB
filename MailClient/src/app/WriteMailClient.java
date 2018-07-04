@@ -156,7 +156,7 @@ public class WriteMailClient extends MailClient {
 			WriteMailClient sign = new WriteMailClient();
 			sign.signingDocument(doc);
 			
-			//changeEmail(doc);
+			changeEmail(doc);
 			
 			//TODO 6: kriptovati sadrzaj dokumenta
 			xmlCipher.doFinal(doc, rootElement, true);
